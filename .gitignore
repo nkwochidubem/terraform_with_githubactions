@@ -1,0 +1,9 @@
+# Local .terraform folder (contains heavy binaries)
+.terraform/
+
+# State files (should be in S3, not GitHub)
+*.tfstate
+*.tfstate.backup
+
+# Sensitive variables
+*.tfvars
