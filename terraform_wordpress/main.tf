@@ -5,7 +5,7 @@ provider "aws" {
 
 # 1. The S3 Bucket for State
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "wp-terraform-state-dev" # Must be globally unique
+  bucket = "wpterraformstatedev" # Must be globally unique
   
   lifecycle {
     prevent_destroy = true # Safety first!
