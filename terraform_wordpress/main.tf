@@ -32,13 +32,23 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "state_encryption"
 
 # 4. DynamoDB Table for State Locking
 resource "aws_dynamodb_table" "terraform_locks" {
-  name         = "terraform-lock-table"
+  name         = "terraform-locks"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "LockID"
 
   attribute {
     name = "LockID"
     type = "S"
+  }
+}
+
+terraform {
+  backend "s3" {
+    bucket         = "wpterraformstatedev" # Create this bucket first
+    key            = "wordpress/terraform.tfstate"
+    region         = "ap-northeast-1"
+    encrypt        = true
+    dynamodb_table = "terraform-locks" # Optional: prevents concurrent runs
   }
 }
 
