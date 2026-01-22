@@ -42,15 +42,6 @@ resource "aws_dynamodb_table" "terraform_locks" {
   }
 }
 
-terraform {
-  backend "s3" {
-    bucket         = "wpterraformstatedev" # Create this bucket first
-    key            = "wordpress/terraform.tfstate"
-    region         = "ap-northeast-1"
-    encrypt        = true
-    dynamodb_table = "terraform-locks" # Optional: prevents concurrent runs
-  }
-}
 
 
 
