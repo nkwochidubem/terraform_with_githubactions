@@ -24,7 +24,7 @@ jobs:
         working-directory: bootstrap
         run: |
           terraform init
-          terraform apply -auto-approve
+          terraform destroy -auto-approve
 
 
   deploy:
@@ -60,5 +60,5 @@ jobs:
       working-directory: terraform_wordpress
 
     - name: Terraform Apply
-      run: terraform apply -auto-approve -var-file=envs/dev.tfvars
+      run: terraform destroy -auto-approve -var-file=envs/dev.tfvars
       working-directory: terraform_wordpress
