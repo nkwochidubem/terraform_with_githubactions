@@ -52,7 +52,7 @@ jobs:
             -backend-config="bucket=wpterraformstatedev12345" \
             -backend-config="key=wordpress/terraform.tfstate" \
             -backend-config="region=us-east-1" \
-            -backend-config="dynamodb_table=terraform-locks"
+            -backend-config="dynamodb_table=terraform-locks" \
             -backend-config="encrypt=true"
 
     - name: Terraform Plan
