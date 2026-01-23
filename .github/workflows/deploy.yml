@@ -7,7 +7,7 @@ on:
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_REGION: us-east-1
+  AWS_REGION: "us-east-1"
 
 jobs:
   bootstrap:
@@ -24,7 +24,7 @@ jobs:
         working-directory: bootstrap
         run: |
           terraform init
-          terraform destroy -auto-approve
+          terraform apply -auto-approve
 
 
   deploy:
@@ -52,7 +52,7 @@ jobs:
             -backend-config="bucket=wpterraformstatedev12345" \
             -backend-config="key=wordpress/terraform.tfstate" \
             -backend-config="region=us-east-1" \
-            -backend-config="dynamodb_table=terraform-locks"
+            -backend-config="use_lockfile=terraform-locks"
             -backend-config="encrypt=true"
 
     - name: Terraform Plan
@@ -60,5 +60,5 @@ jobs:
       working-directory: terraform_wordpress
 
     - name: Terraform Apply
-      run: terraform destroy -auto-approve -var-file=envs/dev.tfvars
+      run: terraform apply -auto-approve -var-file=envs/dev.tfvars
       working-directory: terraform_wordpress
