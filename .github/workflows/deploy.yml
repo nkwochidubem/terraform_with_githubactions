@@ -27,38 +27,38 @@ jobs:
           terraform destroy -auto-approve
 
 
-  # deploy:
-  #   name: "Deploy Wordpress via Terraform"
-  #   needs: bootstrap
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - uses: actions/checkout@v4
+  deploy:
+    name: "Deploy Wordpress via Terraform"
+    needs: bootstrap
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
 
-  #   - name: Setup Terraform
-  #     uses: hashicorp/setup-terraform@v3
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
 
-  #   # - name: Configure AWS credentials
-  #   #   uses: aws-actions/configure-aws-credentials@v4
-  #   #   with:
-  #   #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #   #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #   #     aws-region: ${{ secrets.AWS_REGION }}
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
 
-  #   - name: Terraform Init
-  #     working-directory: terraform_wordpress
-  #     run: |
-  #         # We pass the backend config via CLI to avoid the "chicken/egg" block error
-  #         terraform init --reconfigure \
-  #           -backend-config="bucket=wpterraformstatedev1234" \
-  #           -backend-config="key=wordpress/terraform.tfstate" \
-  #           -backend-config="region=us-east-1" \
-  #           -backend-config="dynamodb_table=terraform-locks"
-  #           -backend-config="encrypt=true"
+    - name: Terraform Init
+      working-directory: terraform_wordpress
+      run: |
+          # We pass the backend config via CLI to avoid the "chicken/egg" block error
+          terraform init --reconfigure \
+            -backend-config="bucket=wpterraformstatedev12345" \
+            -backend-config="key=wordpress/terraform.tfstate" \
+            -backend-config="region=us-east-1" \
+            -backend-config="dynamodb_table=terraform-locks"
+            -backend-config="encrypt=true"
 
-  #   - name: Terraform Plan
-  #     run: terraform plan  -var-file=envs/dev.tfvars
-  #     working-directory: terraform_wordpress
+    - name: Terraform Plan
+      run: terraform plan  -var-file=envs/dev.tfvars
+      working-directory: terraform_wordpress
 
-  #   - name: Terraform Apply
-  #     run: terraform destroy -auto-approve -var-file=envs/dev.tfvars
-  #     working-directory: terraform_wordpress
+    - name: Terraform Apply
+      run: terraform destroy -auto-approve -var-file=envs/dev.tfvars
+      working-directory: terraform_wordpress
