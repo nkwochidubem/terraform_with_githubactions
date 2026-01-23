@@ -17,7 +17,7 @@ jobs:
 
       - name: Init & Apply Boostrap
         working-directory: bootstrap
-        run: 
+        run: |
           terraform init
           terraform apply -auto-approve
 
