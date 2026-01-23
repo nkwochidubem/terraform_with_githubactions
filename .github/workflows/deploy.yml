@@ -5,9 +5,27 @@ on:
     branches: [ "main" ]
 
 jobs:
-  terraform:
+  bootstrap:
+    name: "Bootstrap S3 Backend"
     runs-on: ubuntu-latest
+    steps: 
+      - name: Checkout
+        uses: actions/checkout@v4
 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Init & Apply Boostrap
+        working-directory: bootstrap
+        run: 
+          terraform init
+          terraform apply -auto-approve
+
+
+  deploy:
+    name: "Deploy Wordpress via Terraform"
+    needs: bootstrap
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
 
@@ -22,12 +40,18 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Terraform Init
-      run: terraform init --reconfigure
       working-directory: terraform_wordpress
+      run: |
+          # We pass the backend config via CLI to avoid the "chicken/egg" block error
+          terraform init --reconfigure \
+            -backend-config="bucket=wpterraformstatedev" \
+            -backend-config="key=wordpress/terraform.tfstate" \
+            -backend-config="region=us-east-1" \
+            -backend-config="dynamodb_table=terraform-locks"
 
-    # - name: Terraform Plan
-    #   run: terraform plan  -var-file=envs/dev.tfvars
-    #   working-directory: terraform_wordpress
+    - name: Terraform Plan
+      run: terraform plan  -var-file=envs/dev.tfvars
+      working-directory: terraform_wordpress
 
     - name: Terraform Apply
       run: terraform destroy -auto-approve -var-file=envs/dev.tfvars
