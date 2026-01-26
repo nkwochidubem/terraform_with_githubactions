@@ -1,0 +1,32 @@
+Parameters:
+  Repo:
+    Description: The GitHub organization/repo for which the OIDC provider is set up
+    Type: String # Enter the repo name here
+
+Resources:
+  devopsrole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: !Sub "${AWS::StackName}-GitHubActionsRole" # Better for tracking in IAM
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            # we use Sub to point to the already existing OIDC role provider arn
+            Federated: !Sub "arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com"
+          Action: 'sts:AssumeRoleWithWebIdentity'
+          Condition:
+            StringLike:
+              'token.actions.githubusercontent.com:sub': !Sub 'repo:${Repo}:*'
+            StringEquals:
+              'token.actions.githubusercontent.com:aud': sts.amazonaws.com
+      ManagedPolicyArns:
+      - 'arn:aws:iam::aws:policy/PowerUserAccess'
+
+Outputs:
+  RoleName:
+    Description: 'The ARN of the IAM role for GitHub Actions'
+    Value: !GetAtt devopsrole.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-RoleName'
