@@ -24,6 +24,12 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::280047339173:role/oidc-Stack-GitHubActionsRole 
+          aws-region: us-east-1
+
       - name: Init & Apply Boostrap
         working-directory: bootstrap
         run: |
