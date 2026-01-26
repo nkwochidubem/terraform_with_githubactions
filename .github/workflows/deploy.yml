@@ -58,7 +58,7 @@ jobs:
       run: |
           # We pass the backend config via CLI to avoid the "chicken/egg" block error
           terraform init --reconfigure \
-            -backend-config="bucket=wpterraformstatedev12345" \
+            -backend-config="bucket=wpterraformstatedev1" \
             -backend-config="key=wordpress/terraform.tfstate" \
             -backend-config="region=us-east-1" \
             -backend-config="dynamodb_table=terraform-locks" \
